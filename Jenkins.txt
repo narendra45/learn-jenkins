@@ -171,10 +171,95 @@ Installation steps in Redhat linux
                 }
             }
         
-
     Execute the project:
         Go To Dash Boards --> click on item name(Hello world) --> click on Build Now
 
+2.2 Pipeline script from SCM:
+    create Project:
+        Go To Dash Boards--> new item-->enter an item name[....] --> select Pipeline --> click ok
+    Configure the project:
+        Go To Dash Boards --> click on item name(Hello world) --> configure --> type description [....]-->goto Pipeline --> select Pipeline script from SCM --> SCM? select git -->Repository URL? give git url https://github.com/narendra45/learn-jenkins.git -->Branches to build? Branch Specifier (blank for 'any')? type */main --> Apply --> Save
+    Execute the project:
+
+        Go To Dash Boards --> click on item name(Hello world) --> click on Build Now
+    
+        Output: Dashboard --> jenkins-test3 -->Build History --> select bild (#4) --> Console Output
+            Started by user admin
+            Obtained jenkinsfile from git https://github.com/narendra45/learn-jenkins.git
+            [Pipeline] Start of Pipeline
+            [Pipeline] node
+            Running on Jenkins in /var/lib/jenkins/workspace/jenkins-test3@2
+            [Pipeline] {
+            [Pipeline] stage
+            [Pipeline] { (Declarative: Checkout SCM)
+            [Pipeline] checkout
+            Selected Git installation does not exist. Using Default
+            The recommended git tool is: NONE
+            No credentials specified
+            Cloning the remote Git repository
+            Cloning repository https://github.com/narendra45/learn-jenkins.git
+            > git init /var/lib/jenkins/workspace/jenkins-test3@2 # timeout=10
+            Fetching upstream changes from https://github.com/narendra45/learn-jenkins.git
+            > git --version # timeout=10
+            > git --version # 'git version 2.43.5'
+            > git fetch --tags --force --progress -- https://github.com/narendra45/learn-jenkins.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+            > git config remote.origin.url https://github.com/narendra45/learn-jenkins.git # timeout=10
+            > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+            Avoid second fetch
+            > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+            Checking out Revision f816736a3c9fcd8cf4925992baae9f7a4f1431f0 (refs/remotes/origin/main)
+            > git config core.sparsecheckout # timeout=10
+            > git checkout -f f816736a3c9fcd8cf4925992baae9f7a4f1431f0 # timeout=10
+            Commit message: "adding jenkinsfile"
+            > git rev-list --no-walk f816736a3c9fcd8cf4925992baae9f7a4f1431f0 # timeout=10
+            [Pipeline] }
+            [Pipeline] // stage
+            [Pipeline] withEnv
+            [Pipeline] {
+            [Pipeline] stage
+            [Pipeline] { (Build)
+            [Pipeline] sh
+            + echo this is Build
+            this is Build
+            [Pipeline] }
+            [Pipeline] // stage
+            [Pipeline] stage
+            [Pipeline] { (Test)
+            [Pipeline] sh
+            + echo this is Test
+            this is Test
+            [Pipeline] }
+            [Pipeline] // stage
+            [Pipeline] stage
+            [Pipeline] { (Deploy)
+            [Pipeline] sh
+            + echo this is Deploy
+            this is Deploy
+            [Pipeline] }
+            [Pipeline] // stage
+            [Pipeline] }
+            [Pipeline] // withEnv
+            [Pipeline] }
+            [Pipeline] // node
+            [Pipeline] End of Pipeline
+            Finished: SUCCESS
+
+2.3 Agent node
+    master and node architecture.
+        1. when work is there, master calls agent and ask them to do work --> Push based architecture
+        2. Daily agent comes to master and ask if there is any work.--> Pull based architecture
+
+    create node Using Username and Password:
+        a. Go To Dash Boards-->Manage Jenkins-->Nodes-->New node-->Node name (give any node name) --> select Permanent Agent --> Click on Create -->Description? [....] --> Number of executors? [give number (3)] -->Remote root directory? /home/ec2-user/jenkins-agent --> Labels?[ any name (AGENT-1)] --> Usage? [Only build jobs with label expressions matching this node] -->Launch method? [Launch agents via SSH] --> Host? [Give Master IP Address] --> 
+        Credentials( ssh-auth) if only None in list click on +Add {-->Add Credentials--> Domain[Global credentials (unrestricted)] --> Kind [Username with password]-->Scope? [Global (Jenkins, nodes, items, all child items, etc)] --> Username?[Master server user name(ec2-user)] --> select Treat username as secret? --> Password? [Master server user password (DevOps321)] --> ID? [give any Id (ssh-auth)] --> click on add } -->
+        Host Key Verification Strategy? [Non verifying Verification Strategy]--> Availability? [Keep this agent online as much as possible] --> click on save
+    create node Using keys:
+        https://www.jenkins.io/doc/book/using/using-agents/
+
+2.4 web hook:
+    https://www.blazemeter.com/blog/how-to-integrate-your-github-repository-to-your-jenkins-project
+
+    
 
 
 http://ip:8080/github-webhook/
