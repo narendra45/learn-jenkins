@@ -1,0 +1,180 @@
+
+
+
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" https://pkg.jenkins.io/debian binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+sudo apt update
+
+sudo apt install fontconfig openjdk-17-jre
+
+sudo apt-get install jenkins
+
+sudo systemctl enable jenkins
+
+/var/lib/jenkins/secrets/initialAdminPassword
+21e6cf4ed0af43cb879775a09a184784
+
+if below error persist please update linux(sudo apt update)
+	ubuntu@ip-172-31-20-88:~$ sudo apt-get install jenkins
+	Reading package lists... Done
+	Building dependency tree... Done
+	Reading state information... Done
+	Package jenkins is not available, but is referred to by another package.
+	This may mean that the package is missing, has been obsoleted, or
+	is only available from another source
+
+	E: Package 'jenkins' has no installation candidate
+	
+	sudo apt-get install jenkins
+
+Update Firewall to enable Jenkins service
+	sudo ufw enable
+	sudo ufw allow 8080 # whatever port number you like
+	sudo apt-get install jenkins
+	
+Check the status of your port:
+	sudo ufw status
+	
+Run Jenkins server
+	sudo service jenkins start or sudo systemctl start jenkins
+	
+	sudo systemctl status jenkins
+
+where you will be prompted to provide an initial password to unlock Jenkins.
+
+Follow up the screen instructions and in the terminal, type below:
+	sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+	
+https://github.com/narendra45/devopslearnings.git
+	
+Installation steps in Redhat linux
+	2  sudo yum install wget
+    3  sudo yum upgrade
+    4  sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    5  sudo cat /etc/yum.repos.d/jenkins.repo
+    6  sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+    7  sudo yum upgrade
+    8  sudo yum install fontconfig java-17-openjdk
+    9  sudo yum install jenkins -y
+   10  sudo systemctl daemon-reload
+   11  sudo systemctl enable jenkins
+   12  sudo systemctl start jenkins
+   13  sudo systemctl status jenkins
+   14  sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+   15  sudo yum  install git
+   16  history
+   
+   
+   
+   
+   
+   
+  pipeline {
+    agent {
+        label 'AGENT-1'
+    }
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+        disableConcurrentBuilds()
+    }
+    parameters {
+        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+        text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
+        booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
+        choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
+        password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
+    }
+    environment{
+        DEPLOY_TO =  'production'
+        GREETING = 'Good Morning'
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'echo This is build'
+                sh 'env'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'echo This is Test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'echo This is Deploy'
+            }
+        }
+        stage("print params"){
+            steps{
+                echo "Hello ${params.PERSON}"
+                echo "Biography: ${params.BIOGRAPHY}"
+                echo "Toggle: ${params.TOGGLE}"
+                echo "Choice: ${params.CHOICE}"
+                echo "Password: ${params.PASSWORD}"
+                echo "triggered test again"
+                error 'some failure'
+            }
+        }
+    }
+    post { 
+        always { 
+            echo 'I will always say Hello again!'
+        }
+        success { 
+            echo 'I will run when pipeline is success'
+        }
+        failure { 
+            echo 'I will run when pipeline is failure'
+        }
+    }
+}
+
+
+1. Free style Project:
+    create Project:
+        Go To Dash Boards --> new item-->enter an item name[....] --> select Freestyle project --> click ok
+    Configure the project:
+        Go To Dash Boards --> click on item name(Hello world) --> configure --> type description [....]-->goto Build Steps --> click on Add build step --> select Execute shell --> write command [...] --> Apply --> Save
+    Execute the project:
+        Go To Dash Boards --> click on item name(Hello world) --> click on Build Now
+    
+    Disadvantages:
+        1. anyone can login and do the changes, difficult to track what went wrong
+        2. difficult to restore
+        3. we can't see the history.
+
+2. Scripted Way:
+    a. review can be done before do omething.
+    b. easy to restore.
+    c. track the changes.
+    d. maintai the history.
+
+2.1 pipeline script:
+    create Project:
+        Go To Dash Boards--> new item-->enter an item name[....] --> select Pipeline --> click ok
+    Configure the project:
+        Go To Dash Boards --> click on item name(Hello world) --> configure --> type description [....]-->goto Pipeline --> select Pipeline script --> Script? select Hello World or write you sample script --> Apply --> Save
+
+        sample helo world script:
+            pipeline {
+                agent any
+
+                stages {
+                    stage('Hello') {
+                        steps {
+                            echo 'Hello World'
+                        }
+                    }
+                }
+            }
+        
+
+    Execute the project:
+        Go To Dash Boards --> click on item name(Hello world) --> click on Build Now
+
+
+
+http://ip:8080/github-webhook/
